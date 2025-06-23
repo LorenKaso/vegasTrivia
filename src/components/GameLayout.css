@@ -1,0 +1,107 @@
+.game-layout-body {
+  background-color: white;
+  background-image: url('/images/table.png');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  background-attachment: fixed;
+  color: white;
+  text-align: center;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+}
+
+.game-content-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+}
+
+.card {
+  background: rgba(0, 153, 204, 0.6);
+  border: 3px solid white;
+  border-radius: 20px;
+  padding: 1.5rem;
+  width: 260px;
+  height: 150px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(2px);
+  margin-bottom: 2rem;
+  text-align: center;
+  color: white;
+}
+
+.answers-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  max-width: 800px;
+  width: 100%;
+}
+
+.answer-card {
+  background-color: rgba(0, 153, 204, 0.6);
+  color: white;
+  padding: 1rem;
+  border-radius: 16px;
+  border: 2px solid white;
+  font-size: 1rem;
+  cursor: pointer;
+  text-align: center;
+  font-weight: bold;
+  transition: background-color 0.5s ease, transform 0.2s ease;
+}
+
+.answer-card:hover {
+  transform: scale(1.05);
+  background-color: #ff1a1a;
+}
+
+.correct-answer {
+  background-color: #4CAF50 !important;
+  color: white !important;
+  border: 2px solid #2e7d32 !important;
+  font-weight: bold !important;
+}
+
+.wrong-answer {
+  background-color: #f44336 !important;
+  color: white !important;
+  border: 2px solid #b71c1c !important;
+  font-weight: bold !important;
+}
+
+#back-to-home-btn {
+  position: absolute;
+  top: 17px;
+  right: 55px;
+  background-color: #a06e02;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  transition: background-color 0.3s, transform 0.2s;
+  z-index: 20;
+}
+
+#back-to-home-btn:hover {
+  background-color: #cc0000;
+  transform: scale(1.05);
+}

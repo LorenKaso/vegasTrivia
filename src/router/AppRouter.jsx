@@ -1,18 +1,9 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Login from '../pages/Login';
 import Home from '../pages/Home';
-
-function MonoGame() {
-  return <h1>מסך מונו טריוויה</h1>;
-}
-
-function PoloGame() {
-  return <h1>מסך פולו טריוויה</h1>;
-}
-
-function GlobalGame() {
-  return <h1>מסך עולמי טריוויה</h1>;
-}
+import MonoGame from "../pages/MonoGame";
+import PoloGame from "../pages/PoloGame";
+import GlobalGame from "../pages/GlobalGame";
 
 function AppRouter() {
   return (
