@@ -1,0 +1,100 @@
+.login-container {
+  height: 100vh;
+  width: 100vw;
+  background: radial-gradient(circle, #cc0000, #660000);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.slot-image {
+  height: auto;
+  width: 60vw;
+  max-width: 90vw;
+  position: relative;
+}
+
+.slots {
+  position: absolute;
+  width: 28vw; /* תלוי בגודל המסגרת בתמונה */
+  height: 12vh;
+  top: 44%; /* תלוי במיקום המדויק בתמונה */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: space-between;
+  gap: 2%;
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+
+.slots.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.slot-window {
+  width: 8vw;
+  height: 12vh;
+  background: white;
+  border: 2px solid #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.reel {
+  display: flex;
+  flex-direction: column;
+}
+
+.reel.spinning {
+  animation: scroll 1s linear infinite;
+}
+
+.symbol {
+  height: 12vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: black;
+  font-size: 2rem;
+}
+
+.vegas-text {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  color: #fff;
+  font-size: 4rem;
+  text-shadow: 0 0 15px gold;
+  animation: grow 1s forwards;
+  z-index: 5;
+}
+
+.mute-button {
+  position: absolute;
+  top: 2%;
+  right: 2%;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+@keyframes scroll {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-300%); }
+}
+
+@keyframes grow {
+  to {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}

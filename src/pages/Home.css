@@ -1,0 +1,130 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background: radial-gradient(circle, #ccf2ff, #003366);
+  color: #fff;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('https://i.imgur.com/Yd3M5De.png') no-repeat center center;
+  background-size: cover;
+  opacity: 0.08;
+  z-index: 0;
+}
+
+.curtains {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 15vw;
+  background: linear-gradient(to right, #800000, #cc0000);
+  z-index: 1;
+  animation-duration: 2s;
+  animation-fill-mode: forwards;
+}
+
+.curtains.left {
+  left: 0;
+  border-right: 2px solid #fff2f2;
+  animation-name: openLeft;
+}
+
+.curtains.right {
+  right: 0;
+  border-left: 2px solid #fff2f2;
+  animation-name: openRight;
+}
+
+@keyframes openLeft {
+  0% { left: 0; }
+  100% { left: -15vw; }
+}
+
+@keyframes openRight {
+  0% { right: 0; }
+  100% { right: -15vw; }
+}
+
+.home-screen {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.content-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 400px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.home-title {
+  font-size: 3rem;
+  margin-bottom: 3rem;
+  color: #ffe6e6;
+  text-shadow: 
+    1px 1px 1px black,
+    -1px 1px 1px black,
+    1px -1px 1px black,
+    -1px -1px 1px black,
+    0 0 15px #ffcc00,
+    0 0 25px #ff6600;
+  padding: 0.5rem 1.5rem;
+  font-family: 'Segoe UI', 'Arial Rounded MT Bold', 'Verdana', sans-serif;
+  border-radius: 8px;
+}
+
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.button-group button {
+  width: 280px;
+  background: linear-gradient(145deg, #ff6666, #cc0000);
+  color: #fff;
+  border: none;
+  padding: 1rem 2.5rem;
+  border-radius: 12px;
+  font-size: 1.4rem;
+  cursor: pointer;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.4), 0 0 35px rgba(255, 204, 0, 0.5);
+  transition: background 0.3s ease, transform 0.2s, box-shadow 0.3s ease;
+  position: relative;
+}
+
+.button-group button:hover {
+  background: #ff1a1a;
+  transform: scale(1.1);
+  box-shadow: 0 0 35px rgba(255, 255, 255, 0.7), 0 0 50px rgba(255, 204, 0, 0.8);
+}
+
+.button-group button.fade-transition {
+  transition: all 0.4s ease;
+}
