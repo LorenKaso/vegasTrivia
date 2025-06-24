@@ -1,33 +1,79 @@
-.game-layout-body {
-  background-color: white;
-  background-image: url('/images/table.png');
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
-  background-attachment: fixed;
-  color: white;
-  text-align: center;
-  overflow: hidden;
+/* שכבת פופ-אפ כהה */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 2rem;
-  height: 100vh;
-  width: 100vw;
-  position: relative;
+  z-index: 100;
 }
 
-.game-content-wrapper {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+/* שני כפתורי הבחירה בפופ-אפ */
+.popup-buttons {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  gap: 2rem;
+  justify-content: center;
   align-items: center;
-  z-index: 10;
 }
 
+.popup-buttons button {
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  min-width: 200px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  color: white;
+}
+
+#confirm-exit-btn {
+  background-color: #c42d07;
+}
+
+#confirm-exit-btn:hover {
+  background-color: #ff6a00;
+  transform: translateY(-2px);
+}
+
+#cancel-exit-btn {
+  background-color: #0f3c96;
+}
+
+#cancel-exit-btn:hover {
+  background-color: #004080;
+  transform: translateY(-2px);
+}
+
+/* עיצוב כפתור חזרה לדף הבית */
+#back-to-home-btn {
+  position: absolute;
+  top: 17px;
+  right: 55px;
+  background-color: #a06e02;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s, transform 0.2s;
+  z-index: 20;
+}
+
+#back-to-home-btn:hover {
+  background-color: #cc0000;
+  transform: scale(1.05);
+}
+
+/* עיצוב כרטיס השאלה */
 .card {
   background: rgba(0, 153, 204, 0.6);
   border: 3px solid white;
@@ -35,7 +81,7 @@
   padding: 1.5rem;
   width: 260px;
   height: 150px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.4);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -45,6 +91,7 @@
   color: white;
 }
 
+/* גריד תשובות */
 .answers-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -53,6 +100,8 @@
   width: 100%;
 }
 
+/* עיצוב תשובות */
+/* עיצוב תשובות רגיל */
 .answer-card {
   background-color: rgba(0, 153, 204, 0.6);
   color: white;
@@ -68,40 +117,22 @@
 
 .answer-card:hover {
   transform: scale(1.05);
-  background-color: #ff1a1a;
+  background-color: rgba(255, 0, 0, 0.4);
 }
 
+/* תשובה נכונה - הבהוב ירוק */
 .correct-answer {
-  background-color: #4CAF50 !important;
-  color: white !important;
-  border: 2px solid #2e7d32 !important;
-  font-weight: bold !important;
+  animation: flash-green 0.5s alternate 6;
+  background-color: #4CAF50;
+  color: white;
+  border: 2px solid #2e7d32;
+  font-weight: bold;
 }
 
 .wrong-answer {
-  background-color: #f44336 !important;
-  color: white !important;
-  border: 2px solid #b71c1c !important;
-  font-weight: bold !important;
-}
-
-#back-to-home-btn {
-  position: absolute;
-  top: 17px;
-  right: 55px;
-  background-color: #a06e02;
+  animation: flash-red 0.5s alternate 6;
+  background-color: #f44336;
   color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-  transition: background-color 0.3s, transform 0.2s;
-  z-index: 20;
-}
-
-#back-to-home-btn:hover {
-  background-color: #cc0000;
-  transform: scale(1.05);
+  border: 2px solid #b71c1c;
+  font-weight: bold;
 }

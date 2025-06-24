@@ -18,10 +18,7 @@ function PoloGame() {
 
   return (
     <div className="game-layout-body">
-      <button id="back-to-home-btn" onClick={() => navigate("/home")}>
-        דף הבית
-      </button>
-
+      
       <GameLayout
         question={question}
         answers={answers}
