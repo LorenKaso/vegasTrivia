@@ -1,0 +1,70 @@
+/* סרגל העזרים - שורת כפתורים */
+.power-ups-bar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  z-index: 500; /* לוודא שזה מעל האלמנטים האחרים */
+}
+
+/* כפתור עזר עגול עם טקסט ואימוג' */
+.power-up-btn {
+  width: 60px;
+  height: 60px;
+  background-color: #10aeb6;
+  border: 2px solid white;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s ease, background-color 0.3s ease;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  padding: 0.2rem;
+}
+
+.power-up-btn:hover {
+  transform: scale(1.1);
+  background-color: #0077aa;
+}
+
+/* אימוג' בראש הכפתור */
+.power-up-btn .emoji {
+  font-size: 1.1rem;
+  margin-bottom: 0.2rem;
+}
+
+/* טקסט כיתוב קטן יותר */
+.power-up-btn .label {
+  font-size: 0.6rem;
+  line-height: 1;
+}
+
+.power-up-btn-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.suggestion-text {
+  margin-top: 4px;
+  font-size: 0.6rem;
+  color: #fff;
+  background: rgba(0, 153, 204, 0.6);
+  padding: 3px 6px;
+  border-radius: 5px;
+  text-align: center;
+  max-height: 20px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+

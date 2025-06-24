@@ -51,11 +51,12 @@
   transform: translateY(-2px);
 }
 
+
 /* עיצוב כפתור חזרה לדף הבית */
 #back-to-home-btn {
-  position: absolute;
+  position: fixed;
   top: 17px;
-  right: 55px;
+  right: 30px ; 
   background-color: #a06e02;
   color: white;
   padding: 10px 15px;
@@ -69,7 +70,7 @@
 }
 
 #back-to-home-btn:hover {
-  background-color: #cc0000;
+  background-color: #a69004;
   transform: scale(1.05);
 }
 
@@ -90,6 +91,7 @@
   text-align: center;
   color: white;
 }
+
 
 /* גריד תשובות */
 .answers-grid {
@@ -113,6 +115,11 @@
   text-align: center;
   font-weight: bold;
   transition: background-color 0.5s ease, transform 0.2s ease;
+}
+
+.answer-card.disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .answer-card:hover {

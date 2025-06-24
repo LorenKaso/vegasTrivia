@@ -5,6 +5,7 @@ import GameLayout from "../components/GameLayout";
 import Timer from "../components/Timer";
 import "../components/GameLayout.css";
 import "./MonoGame.css";
+import Scoreboard from "../components/Scoreboard";
 
 function MonoGame() {
   const navigate = useNavigate();

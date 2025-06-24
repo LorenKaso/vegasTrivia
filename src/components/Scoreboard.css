@@ -1,0 +1,90 @@
+.scoreboard-overlay {
+  position: fixed;
+  top: 70px;
+  left: 10px;
+  z-index: 9999;
+  padding: 0.5rem;
+}
+
+
+.scoreboard-table {
+  background: rgba(0, 0, 0, 0.6); 
+  border: 4px solid #279406;
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+  padding: 1rem;
+  width: clamp(100px, 15vw, 200px);
+  font-family: "Arial", sans-serif;
+  animation: popIn 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* תוכן יהיה למעלה */
+  position: relative;
+  
+}
+
+.scoreboard-table h2 {
+  color: #e6ebe3;
+  font-size: clamp(0.9rem, 1.3vw, 1.2rem);
+  margin-bottom: 0.3rem;
+  margin-top: 0; /* מסיר רווח מיותר מלמעלה */
+}
+
+table {
+  border-collapse: collapse;
+  display: block;
+  margin: 0 auto;
+  width: auto;
+}
+
+th, td {
+  padding: 0.5rem;
+  border-bottom: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  font-size: clamp(0.6rem, 1vw, 0.9rem);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+th:last-child,
+td:last-child {
+  border-right: none;
+}
+
+th {
+  background-color: #0000007e;
+  color: white;
+  font-weight: bold;
+}
+
+tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.move-up {
+  animation: moveUp 0.5s ease;
+  background-color: rgba(0, 255, 0, 0.2);
+}
+
+.move-down {
+  animation: moveDown 0.5s ease;
+  background-color: rgba(255, 0, 0, 0.2);
+}
+
+@keyframes moveUp {
+  0% { transform: translateY(10px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes moveDown {
+  0% { transform: translateY(-10px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
