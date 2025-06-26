@@ -68,7 +68,13 @@ function GameLayout({
 
         <div className="game-content-wrapper">
           <div className="card">
-            <h2>{question}</h2>
+            <h2
+              style={{
+                fontSize: question.split(" ").length > 8 ? "0.9rem" : "1.2rem",
+              }}
+            >
+            {question}
+          </h2>
           </div>
 
           <div className="answers-grid">
@@ -102,14 +108,15 @@ function GameLayout({
 
           {children}
         </div>
-        
-        {/* עזרי המשחק */}
-        <PowerUps onFiftyFifty={handleFiftyFifty} 
-                  onHelp={handleHelp} 
-                  helpSuggestion={helpSuggestion}
-                  />
       </div>
 
+ 
+      {/* עזרי המשחק */}
+      <PowerUps onFiftyFifty={handleFiftyFifty} 
+                onHelp={handleHelp} 
+                helpSuggestion={helpSuggestion}
+                />
+                
       {showScoreboard && <Scoreboard players={players} />}
 
       {showPopup && (

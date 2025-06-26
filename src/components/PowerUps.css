@@ -1,6 +1,8 @@
 /* סרגל העזרים - שורת כפתורים */
 .power-ups-bar {
-  position: fixed;
+  position: absolute;
+  top: 500px;
+  right: 0;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
@@ -8,8 +10,9 @@
   gap: 1rem;
   justify-content: center;
   align-items: center;
-  z-index: 500; /* לוודא שזה מעל האלמנטים האחרים */
+  z-index: 500;
 }
+
 
 /* כפתור עזר עגול עם טקסט ואימוג' */
 .power-up-btn {

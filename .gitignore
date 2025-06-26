@@ -22,3 +22,25 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Node.js / React
+node_modules/
+build/
+dist/
+.env
+
+# Python
+venv/
+__pycache__/
+*.pyc
+.env
+
+# Mac
+.DS_Store
+
+# VSCode
+.vscode/
+
+# Logs
+*.log
+
