@@ -11,27 +11,37 @@ function Login() {
   const soundRef = useRef(null);
 
   useEffect(() => {
-    console.log("מנסה לנגן סאונד...");
+    const savedName = localStorage.getItem("playerName");
+    const savedAvatar = localStorage.getItem("avatar");
+
     const sound = new Audio("/assets/sounds/slot_machine.mp3");
     sound.volume = 0.5;
     sound.muted = muted;
     sound.play().catch((e) => console.log("שגיאה בהשמעת סאונד:", e));
     soundRef.current = sound;
 
-    const stopSpinTimeout = setTimeout(() => {
+    const firstTimeout = setTimeout(() => {
       setSpinning(false);
 
-      setTimeout(() => {
+      const secondTimeout = setTimeout(() => {
         setShowText(true);
 
-        setTimeout(() => {
-          navigate("/home");
+        const thirdTimeout = setTimeout(() => {
+          if (savedName && savedAvatar) {
+            navigate("/home");
+          } else {
+            navigate("/profile");
+          }
         }, 1500);
+
+        return () => clearTimeout(thirdTimeout);
       }, 500);
+
+      return () => clearTimeout(secondTimeout);
     }, 2500);
 
-    return () => clearTimeout(stopSpinTimeout);
-  }, [navigate]);
+    return () => clearTimeout(firstTimeout);
+  }, [navigate, muted]);
 
   const toggleMute = () => {
     if (soundRef.current) {

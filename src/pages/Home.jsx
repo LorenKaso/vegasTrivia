@@ -58,6 +58,10 @@ function Home() {
             >
               🌍 עולמי-טריוויה
             </button>
+            <button 
+              onClick={() => navigate("/settings")}>שינוי פרופיל
+            </button>
+
           </div>
         </div>
       </div>

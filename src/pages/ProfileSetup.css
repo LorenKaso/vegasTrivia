@@ -1,0 +1,76 @@
+.profile-setup {
+  background: linear-gradient(135deg, #00bcd4, #ff1744);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-family: 'Arial', sans-serif;
+  text-align: center;
+  padding: 2rem;
+}
+
+.profile-setup h2 {
+  font-size: 2.2rem;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px black;
+}
+
+.profile-setup p {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+.profile-setup input {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: none;
+  margin-bottom: 1.5rem;
+  width: 200px;
+  text-align: center;
+}
+
+.avatar-grid {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.avatar-grid img {
+  width: 80px;
+  height: 80px;
+  border: 3px solid white;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.3s, border-color 0.3s;
+}
+
+.avatar-grid img:hover {
+  transform: scale(1.1);
+  border-color: yellow;
+}
+
+.avatar-grid img.selected {
+  border-color: gold;
+  box-shadow: 0 0 15px gold;
+}
+
+.start-btn {
+  padding: 0.7rem 2rem;
+  font-size: 1.1rem;
+  background-color: #ff1744;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.start-btn:hover {
+  background-color: #d50000;
+  transform: scale(1.05);
+}

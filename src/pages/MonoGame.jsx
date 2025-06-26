@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import useQuestionManager from "../components/useQuestionManager";
 import GameLayout from "../components/GameLayout";
@@ -9,13 +9,23 @@ import Scoreboard from "../components/Scoreboard";
 
 function MonoGame() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { getNextQuestion, updateDifficulty } = useQuestionManager();
+
+  const [score, setScore] = useState(0);
+  const [doublePoints, setDoublePoints] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [selected, setSelected] = useState(null);
   const [timeLeft, setTimeLeft] = useState(30);
   const [showNext, setShowNext] = useState(false);
   const [timeExpired, setTimeExpired] = useState(false);
-  
+
+  const playerName = localStorage.getItem("playerName") || "אנונימי";
+  const avatar = localStorage.getItem("avatar") || "";
+
+  const players = [
+    { id: 1, name: playerName, score: score, avatar: avatar }
+  ];
 
   useEffect(() => {
     const q = getNextQuestion();
@@ -41,6 +51,20 @@ function MonoGame() {
     }, 3000);
   };
 
+  const calculateScore = (isCorrect, difficulty, timeTaken) => {
+    if (!isCorrect || timeTaken === 0) return 0;
+
+    if (difficulty > 6 || timeTaken < 7) {
+      return 15;
+    }
+    return 10;
+  };
+
+  const handleAnswer = (isCorrect, difficulty, timeTaken) => {
+    const points = calculateScore(isCorrect, difficulty, timeTaken);
+    setScore(prev => prev + points);
+  };
+
   const handleAnswerClick = (answer) => {
     if (selected || timeExpired) return;
 
@@ -48,10 +72,16 @@ function MonoGame() {
     const isCorrect = answer === currentQuestion.correctAnswer;
     updateDifficulty(isCorrect);
 
+    const timeTaken = 30 - timeLeft; // הזמן שלקח לענות
+    const difficulty = currentQuestion.difficulty;
+
+    handleAnswer(isCorrect, difficulty, timeTaken);
+
     setTimeout(() => {
       setShowNext(true);
     }, 3000);
   };
+
 
   useEffect(() => {
     if (!showNext) return;
@@ -76,6 +106,9 @@ function MonoGame() {
         selected={selected}
         correctAnswer={currentQuestion.correctAnswer}
         onAnswerClick={handleAnswerClick}
+        onDoublePoints={() => setDoublePoints(true)}
+        players={players}
+        showScoreboard={true}
       />
     </div>
   );
