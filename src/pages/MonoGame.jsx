@@ -19,7 +19,7 @@ function MonoGame() {
   const [timeLeft, setTimeLeft] = useState(30);
   const [showNext, setShowNext] = useState(false);
   const [timeExpired, setTimeExpired] = useState(false);
-
+  
   const playerName = localStorage.getItem("playerName") || "אנונימי";
   const avatar = localStorage.getItem("avatar") || "";
 
@@ -27,10 +27,21 @@ function MonoGame() {
     { id: 1, name: playerName, score: score, avatar: avatar }
   ];
 
+  const handleDoublePoints = () => {
+    if (!doublePoints) {
+      setDoublePoints(true);
+      setTimeout(() => setDoublePoints(false), 10000); // פעיל 10 שניות
+    }
+  };
+
   useEffect(() => {
     const q = getNextQuestion();
     setCurrentQuestion(q);
   }, []);
+
+  useEffect(() => {
+    console.log("מצב הכפלת ניקוד:", doublePoints);
+  }, [doublePoints]);
 
   useEffect(() => {
     if (!currentQuestion || selected || showNext || timeExpired) return;
@@ -51,19 +62,30 @@ function MonoGame() {
     }, 3000);
   };
 
-  const calculateScore = (isCorrect, difficulty, timeTaken) => {
-    if (!isCorrect || timeTaken === 0) return 0;
+  const calculateScore = (isCorrect, timeTaken, difficulty, doublePoints) => {
+    if (!isCorrect) return 0;
 
-    if (difficulty > 6 || timeTaken < 7) {
-      return 15;
+    let points = 10;
+
+    if (timeTaken <= 5) {
+      points = 15;
+    } else if (timeTaken <= 7 && difficulty > 5) {
+      points = 15;
     }
-    return 10;
+
+    if (doublePoints) {
+      points *= 2;
+    }
+
+    return points;
   };
 
-  const handleAnswer = (isCorrect, difficulty, timeTaken) => {
-    const points = calculateScore(isCorrect, difficulty, timeTaken);
+
+  const handleAnswer = (isCorrect, timeTaken, difficulty) => {
+    const points = calculateScore(isCorrect, timeTaken, difficulty, doublePoints);
     setScore(prev => prev + points);
   };
+
 
   const handleAnswerClick = (answer) => {
     if (selected || timeExpired) return;
@@ -72,10 +94,10 @@ function MonoGame() {
     const isCorrect = answer === currentQuestion.correctAnswer;
     updateDifficulty(isCorrect);
 
-    const timeTaken = 30 - timeLeft; // הזמן שלקח לענות
+    const timeTaken = 30 - timeLeft;
     const difficulty = currentQuestion.difficulty;
 
-    handleAnswer(isCorrect, difficulty, timeTaken);
+    handleAnswer(isCorrect, timeTaken, difficulty);
 
     setTimeout(() => {
       setShowNext(true);
@@ -106,7 +128,7 @@ function MonoGame() {
         selected={selected}
         correctAnswer={currentQuestion.correctAnswer}
         onAnswerClick={handleAnswerClick}
-        onDoublePoints={() => setDoublePoints(true)}
+        onDoublePoints={handleDoublePoints}
         players={players}
         showScoreboard={true}
       />

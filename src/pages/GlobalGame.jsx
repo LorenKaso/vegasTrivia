@@ -12,28 +12,48 @@ function GlobalGame() {
   const location = useLocation();
   const { getNextQuestion, updateDifficulty } = useQuestionManager();
 
-  const [score, setScore] = useState(0);
   const [doublePoints, setDoublePoints] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [selected, setSelected] = useState(null);
   const [timeLeft, setTimeLeft] = useState(30);
   const [showNext, setShowNext] = useState(false);
   const [timeExpired, setTimeExpired] = useState(false);
+  const [players, setPlayers] = useState([]);
 
   const playerName = localStorage.getItem("playerName") || "אנונימי";
   const avatar = localStorage.getItem("avatar") || "";
 
-  const players = [
-    { id: 1, name: playerName, score: score, avatar: avatar }
-  ];
-
   useEffect(() => {
     const q = getNextQuestion();
     setCurrentQuestion(q);
+
+    const initialPlayers = [
+      { id: 1, name: playerName, score: 0, avatar, answer: null, isBot: false },
+      { id: 2, name: "בוט 1", score: 0, avatar: "", answer: null, isBot: true },
+      { id: 3, name: "בוט 2", score: 0, avatar: "", answer: null, isBot: true },
+      { id: 4, name: "בוט 3", score: 0, avatar: "", answer: null, isBot: true },
+      { id: 5, name: "בוט 4", score: 0, avatar: "", answer: null, isBot: true },
+    ];
+
+    setPlayers(initialPlayers);
   }, []);
 
   useEffect(() => {
-    if (!currentQuestion || selected || showNext || timeExpired) return;
+    if (!currentQuestion) return;
+
+    // בוטים עונים רנדומלית אחרי 2-8 שניות
+    players.forEach(player => {
+      if (player.isBot) {
+        const answerTime = Math.random() * 6000 + 2000;
+        setTimeout(() => {
+          handleBotAnswer(player.id);
+        }, answerTime);
+      }
+    });
+  }, [currentQuestion]);
+
+  useEffect(() => {
+    if (!currentQuestion || showNext || timeExpired) return;
 
     if (timeLeft === 0) {
       revealAnswer();
@@ -42,7 +62,7 @@ function GlobalGame() {
 
     const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
     return () => clearTimeout(timer);
-  }, [timeLeft, selected, showNext, timeExpired, currentQuestion]);
+  }, [timeLeft, currentQuestion, showNext, timeExpired]);
 
   const revealAnswer = () => {
     setTimeExpired(true);
@@ -51,25 +71,62 @@ function GlobalGame() {
     }, 3000);
   };
 
-  const calculateScore = () => {
-    let points = timeLeft > 15 ? 15 : 10;
+  const calculateScore = (isCorrect, isFirstCorrect, difficulty, doublePoints) => {
+    if (!isCorrect) return 0;
+
+    let points = isFirstCorrect ? 15 : 10;
+    if (isFirstCorrect && difficulty > 6) points += 5;
     if (doublePoints) points *= 2;
-    setScore(prev => prev + points);
-    setDoublePoints(false);
+
+    return points;
+  };
+
+  const handlePlayerAnswer = (playerId, answer) => {
+    setPlayers(prev => {
+      const updatedPlayers = prev.map(p =>
+        p.id === playerId ? { ...p, answer } : p
+      );
+
+      const correctPlayers = updatedPlayers.filter(p => p.answer === currentQuestion.correctAnswer);
+      const isFirstCorrect = correctPlayers.length === 1 && answer === currentQuestion.correctAnswer;
+      const isCorrect = answer === currentQuestion.correctAnswer;
+      const difficulty = currentQuestion.difficulty;
+      const points = calculateScore(isCorrect, isFirstCorrect, difficulty, doublePoints);
+
+      const newPlayers = updatedPlayers.map(p =>
+        p.id === playerId ? { ...p, score: p.score + points } : p
+      );
+
+      const allAnswered = newPlayers.every(p => p.answer !== null);
+
+      if (allAnswered && !timeExpired) {
+        revealAnswer();
+      }
+
+      return newPlayers;
+    });
+
+    if (playerId === 1) {
+      setSelected(answer);
+      const isCorrect = answer === currentQuestion.correctAnswer;
+      updateDifficulty(isCorrect);
+    }
   };
 
   const handleAnswerClick = (answer) => {
     if (selected || timeExpired) return;
+    handlePlayerAnswer(1, answer);
+  };
 
-    setSelected(answer);
-    const isCorrect = answer === currentQuestion.correctAnswer;
-    updateDifficulty(isCorrect);
+  const handleBotAnswer = (botId) => {
+    if (timeExpired) return;
 
-    if (isCorrect) calculateScore();
+    const randomValue = Math.random();
+    const botAnswer = randomValue < 0.7
+      ? currentQuestion.correctAnswer
+      : currentQuestion.answers.filter(a => a !== currentQuestion.correctAnswer)[Math.floor(Math.random() * (currentQuestion.answers.length - 1))];
 
-    setTimeout(() => {
-      setShowNext(true);
-    }, 3000);
+    handlePlayerAnswer(botId, botAnswer);
   };
 
   useEffect(() => {
@@ -81,6 +138,9 @@ function GlobalGame() {
     setTimeLeft(30);
     setShowNext(false);
     setTimeExpired(false);
+    setPlayers(prev =>
+      prev.map(p => ({ ...p, answer: null }))
+    );
   }, [showNext]);
 
   if (!currentQuestion) return <h2>טוען שאלות...</h2>;
@@ -95,9 +155,9 @@ function GlobalGame() {
         selected={selected}
         correctAnswer={currentQuestion.correctAnswer}
         onAnswerClick={handleAnswerClick}
-        onDoublePoints={() => setDoublePoints(true)}
         players={players}
         showScoreboard={true}
+        onDoublePoints={() => setDoublePoints(true)}
       />
     </div>
   );

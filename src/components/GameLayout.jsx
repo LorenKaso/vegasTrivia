@@ -10,6 +10,7 @@ function GameLayout({
   selected,
   correctAnswer,
   onAnswerClick,
+  onDoublePoints,
   children,
   players = [],
   showScoreboard = true,
@@ -27,6 +28,12 @@ function GameLayout({
       return () => clearTimeout(timer);
     }
   }, [selected]);
+
+  //clean llm answer
+  useEffect(() => {
+    setHelpSuggestion("");
+  }, [question]);
+
 
   const handleFiftyFifty = () => {
     const incorrectAnswers = answers.filter(ans => ans !== correctAnswer);
@@ -57,7 +64,6 @@ function GameLayout({
       onAnswerClick(answer);
     }
   };
-
 
   return (
     <>
@@ -114,8 +120,9 @@ function GameLayout({
       {/* עזרי המשחק */}
       <PowerUps onFiftyFifty={handleFiftyFifty} 
                 onHelp={handleHelp} 
+                onDoublePoints={onDoublePoints}
                 helpSuggestion={helpSuggestion}
-                />
+      />
                 
       {showScoreboard && <Scoreboard players={players} />}
 
