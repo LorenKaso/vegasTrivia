@@ -12,6 +12,11 @@ function Home() {
     <div className="home-body">
       <div className="curtains left"></div>
       <div className="curtains right"></div>
+       <button
+          className="edit-profile-icon"
+          onClick={() => navigate("/profile")}
+          title="עריכת פרופיל"> ⚙️
+        </button>
 
       <div className="home-screen show">
         <div className="content-wrapper">
@@ -58,10 +63,7 @@ function Home() {
             >
               🌍 עולמי-טריוויה
             </button>
-            <button 
-              onClick={() => navigate("/settings")}>שינוי פרופיל
-            </button>
-
+          
           </div>
         </div>
       </div>

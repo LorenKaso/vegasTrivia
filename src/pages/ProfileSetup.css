@@ -1,76 +1,128 @@
-.profile-setup {
+/* רקע כללי */
+.profile-container {
+  height: 100vh;
+  width: 100vw;
   background: linear-gradient(135deg, #00bcd4, #ff1744);
-  min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  color: white;
-  font-family: 'Arial', sans-serif;
-  text-align: center;
+  align-items: center;
+  direction: rtl;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* כרטיס ממורכז עם טשטוש */
+.profile-card {
+  background: rgba(255, 255, 255, 0.15);
   padding: 2rem;
+  border-radius: 20px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
+  color: white;
 }
 
-.profile-setup h2 {
-  font-size: 2.2rem;
-  margin-bottom: 1rem;
-  text-shadow: 2px 2px 4px black;
+/* כותרת */
+.profile-card h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
 }
 
-.profile-setup p {
-  font-size: 1.1rem;
+/* תיאור */
+.profile-card p {
+  font-size: 1rem;
   margin-bottom: 1.5rem;
 }
 
-.profile-setup input {
-  padding: 0.5rem 1rem;
+/* שדה קלט */
+.profile-card input {
+  width: 100%;
+  padding: 0.6rem;
   font-size: 1rem;
-  border-radius: 8px;
+  border-radius: 10px;
   border: none;
   margin-bottom: 1.5rem;
-  width: 200px;
   text-align: center;
 }
 
-.avatar-grid {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  margin-bottom: 2rem;
-}
-
-.avatar-grid img {
-  width: 80px;
-  height: 80px;
-  border: 3px solid white;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: transform 0.3s, border-color 0.3s;
-}
-
-.avatar-grid img:hover {
-  transform: scale(1.1);
-  border-color: yellow;
-}
-
-.avatar-grid img.selected {
-  border-color: gold;
-  box-shadow: 0 0 15px gold;
-}
-
-.start-btn {
-  padding: 0.7rem 2rem;
+/* כותרת אוואטרים */
+.profile-card h3 {
+  margin-bottom: 1rem;
   font-size: 1.1rem;
-  background-color: #ff1744;
-  color: white;
+}
+
+/* רשת אוואטרים: 3 למעלה, 2 למטה ממורכזים */
+.avatar-selection {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  justify-items: center;
+  margin-bottom: 1rem;
+  width: 100%;
+  max-width: 300px;
+  margin-inline: auto;
+}
+
+/* להזיז את האוואטרים התחתונים למרכז */
+.avatar-selection img:nth-child(4) {
+  grid-column-start: 2;
+}
+.avatar-selection img:nth-child(5) {
+  grid-column-start: 3;
+}
+
+/* עיצוב כללי לאוואטרים */
+.avatar-selection img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.3s;
+}
+
+.avatar-selection img:hover {
+  transform: scale(1.1);
+}
+
+.avatar-selection img.selected {
+  border-color: gold;
+  box-shadow: 0 0 10px gold;
+}
+
+/* כפתור התחלה */
+.start-button {
+  padding: 0.7rem 1.5rem;
+  font-size: 1.1rem;
+  background: #ff1744;
   border: none;
   border-radius: 10px;
+  color: white;
   cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.4);
   transition: background-color 0.3s, transform 0.2s;
 }
 
-.start-btn:hover {
-  background-color: #d50000;
+.start-button:hover {
+  background: #d50000;
   transform: scale(1.05);
+}
+
+.error-msg {
+  color: #ff4d4d; /* אדום בולט */
+  font-size: 0.95rem;
+  font-weight: bold;
+  margin-top: -1rem;
+  margin-bottom: 1rem;
+}
+
+.error-msg {
+  color: #ff0000;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  margin-top: -1rem;
+  margin-bottom: 1rem;
 }

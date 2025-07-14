@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import "./Settings.css";
 
 function Settings() {
   const navigate = useNavigate();
@@ -9,7 +10,9 @@ function Settings() {
   const avatars = [
     "/images/monopoly1.png",
     "/images/monopoly2.png",
-    "/images/monopoly3.png"
+    "/images/monopoly3.png",
+    "/images/monopoly4.png",
+    "/images/monopoly5.png"
   ];
 
   useEffect(() => {
@@ -32,28 +35,31 @@ function Settings() {
 
   return (
     <div className="settings-page">
-      <h2>הגדרות פרופיל</h2>
-      <input
-        type="text"
-        placeholder="שם שחקן..."
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
+      <div className="settings-content">
+        <h2>הגדרות פרופיל</h2>
 
-      <h3>בחר דמות:</h3>
-      <div className="avatar-grid">
-        {avatars.map((img) => (
-          <img
-            key={img}
-            src={img}
-            alt="avatar"
-            className={avatar === img ? "selected" : ""}
-            onClick={() => setAvatar(img)}
-          />
-        ))}
+        <input
+          type="text"
+          placeholder="שם שחקן..."
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+
+        <h3>בחר דמות:</h3>
+        <div className="avatar-grid">
+          {avatars.map((img) => (
+            <img
+              key={img}
+              src={img}
+              alt="avatar"
+              className={avatar === img ? "selected" : ""}
+              onClick={() => setAvatar(img)}
+            />
+          ))}
+        </div>
+
+        <button className="start-btn" onClick={handleSave}>שמור</button>
       </div>
-
-      <button className="start-btn" onClick={handleSave}>שמור</button>
     </div>
   );
 }
