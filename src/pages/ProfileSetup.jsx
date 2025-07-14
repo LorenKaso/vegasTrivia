@@ -37,7 +37,16 @@ function ProfileSetup() {
 
     localStorage.setItem("playerName", name);
     localStorage.setItem("avatar", avatar);
-    navigate("/home");
+
+    const params = new URLSearchParams(window.location.search);
+    const redirect = params.get("redirect") || "home";
+    const room = params.get("room");
+
+    if (room) {
+      navigate(`/${redirect}?room=${room}`);
+    } else {
+      navigate(`/${redirect}`);
+    }
   };
 
   return (
