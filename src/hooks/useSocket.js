@@ -16,8 +16,12 @@ export default function useSocket(onMessage, roomId) {
     };
 
     socket.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      onMessage(data);
+      try{
+        const data = JSON.parse(event.data);
+        onMessage(data);
+      }catch(e){
+        console.error("❌ WebSocket message parsing error:", e);
+      }
     };
 
     socket.onclose = () => {
@@ -25,8 +29,14 @@ export default function useSocket(onMessage, roomId) {
       setIsReady(false);
     };
 
+    socket.onerror = (err) => {
+      console.error("❗ WebSocket error:", err);
+    };
+
     return () => {
+      console.log("🔌 Cleaning up WebSocket");
       socket.close();
+      setIsReady(false);
     };
   }, [roomId]);
 
