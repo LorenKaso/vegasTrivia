@@ -1,4 +1,3 @@
-# server.py
 import asyncio
 import json
 import random
@@ -81,9 +80,17 @@ class ConnectionManager:
                 del self.player_info[room_id]
                 room_states.pop(room_id, None)
 
-    async def broadcast(self, room_id: str, message: dict):
-        for connection in self.active_connections[room_id]:
-            await connection.send_text(json.dumps(message))
+    async def broadcast(self, room_id, message):
+        disconnected = []
+        for connection in self.active_connections.get(room_id, []):
+            try:
+                await connection.send_text(json.dumps(message))
+            except:
+                disconnected.append(connection)
+
+        # הסר חיבורים סגורים
+        for conn in disconnected:
+            self.active_connections[room_id].remove(conn)
 
     async def broadcast_player_list(self, room_id: str):
         players = [info for info in self.player_info[room_id].values()]
@@ -167,7 +174,7 @@ manager = ConnectionManager()
 
 @app.websocket("/ws/{room_id}")
 async def websocket_endpoint(websocket: WebSocket, room_id: str):
-    await manager.connect(room_id, websocket)
+    await manager.connect(room_id, websocket)  # accept קורה כאן
     try:
         while True:
             data = await websocket.receive_text()
@@ -186,7 +193,7 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str):
                 await manager.broadcast(room_id, { "type": "game_starting" })
                 await asyncio.sleep(3)
                 await manager.send_next_question(room_id)
-                            
+
             elif data["type"] == "answer":
                 await manager.handle_answer(
                     room_id,
