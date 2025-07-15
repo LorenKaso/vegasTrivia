@@ -5,6 +5,7 @@ import MonoGame from "../pages/MonoGame";
 import PoloGame from "../pages/PoloGame";
 import GlobalGame from "../pages/GlobalGame";
 import ProfileSetup from "../pages/ProfileSetup"; // חובה להוסיף
+import PoloRoom from "../pages/PoloRoom"; // חובה להוסיף
 
 function AppRouter() {
   return (
@@ -12,6 +13,7 @@ function AppRouter() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/profile" element={<ProfileSetup />} />
+        <Route path="/poloroom" element={<PoloRoom />} />
         <Route path="/home" element={<Home />} />
         <Route path="/mono" element={<MonoGame />} />
         <Route path="/polo" element={<PoloGame />} />

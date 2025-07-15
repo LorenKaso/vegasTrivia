@@ -1,0 +1,175 @@
+.polo-container {
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(to bottom, #2196f3, #e91e63);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  direction: rtl;
+  font-family: 'Segoe UI', sans-serif;
+  color: white;
+  text-align: center;
+}
+
+.polo-card {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 400px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+
+.polo-card button + button {
+  margin-top: 1.2rem;
+}
+
+.player-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.player-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.player-card img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 3px solid white;
+  margin-bottom: 5px;
+}
+
+.share-btn {
+  background: #fff;
+  color: #19050c;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.share-btn:hover {
+  background: #f1f1f1;
+}
+
+.waiting-message {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 0.7rem 1rem;
+  border-radius: 12px;
+  margin-top: 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  backdrop-filter: blur(3px);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.redirect-msg {
+  background: #fffae6;
+  color: #996600;
+  border: 1px solid #ffe58f;
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+/* סרגל העזרים - שורת כפתורים */
+.power-ups-bar {
+  position: absolute;
+  top: 500px;
+  right: 0;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  z-index: 500;
+}
+
+
+/* כפתור עזר עגול עם טקסט ואימוג' */
+.power-up-btn {
+  width: 60px;
+  height: 60px;
+  background-color: #10aeb6;
+  border: 2px solid white;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s ease, background-color 0.3s ease;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  padding: 0.2rem;
+}
+
+.power-up-btn:hover {
+  transform: scale(1.1);
+  background-color: #0077aa;
+}
+
+/* אימוג' בראש הכפתור */
+.power-up-btn .emoji {
+  font-size: 1.1rem;
+  margin-bottom: 0.2rem;
+}
+
+/* טקסט כיתוב קטן יותר */
+.power-up-btn .label {
+  font-size: 0.6rem;
+  line-height: 1;
+}
+
+.power-up-btn-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.suggestion-text {
+  margin-top: 4px;
+  font-size: 0.6rem;
+  color: #fff;
+  background: rgba(0, 153, 204, 0.6);
+  padding: 3px 6px;
+  border-radius: 5px;
+  text-align: center;
+  max-height: 20px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+
+.start-game-btn {
+  background-color: #4caf50;
+  color: white;
+  font-size: 1.2rem;
+  padding: 12px 24px;
+  margin-bottom: 1rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.start-game-btn:hover {
+  background-color: #45a049;
+}

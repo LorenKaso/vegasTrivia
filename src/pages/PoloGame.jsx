@@ -1,8 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import useSocket from "../hooks/useSocket";
-import GameLayout from "../components/GameLayout";
-import "../components/GameLayout.css";
 import "./PoloGame.css";
 
 function PoloGame() {
@@ -10,40 +8,23 @@ function PoloGame() {
   const [searchParams] = useSearchParams();
   const [roomId, setRoomId] = useState("");
   const [players, setPlayers] = useState([]);
-  const [gameStarted, setGameStarted] = useState(false);
-  const [selected, setSelected] = useState(null);
-  const [question, setQuestion] = useState("ממתין להתחלה...");
-  const [answers, setAnswers] = useState([]);
-  const [correctAnswer, setCorrectAnswer] = useState("");
-  const [redirectMsg, setRedirectMsg] = useState("");
   const isOwner = useRef(false);
 
-  // קבלת פרטי שחקן
   const name = localStorage.getItem("playerName");
   const avatar = localStorage.getItem("avatar");
 
-  // יצירת roomId אם לא קיים
+  // מעבר לדף פרופיל אם חסר שם או אוואטר
   useEffect(() => {
-    let id = searchParams.get("room");
-    if (!id) {
-      id = Math.random().toString(36).substring(2, 8);
-      window.history.replaceState(null, "", `/polo?room=${id}`);
-      isOwner.current = true;
+    if (!name || !avatar) {
+      const currentRoomId = searchParams.get("roomId") || "";
+      navigate(`/profile?redirect=polo&roomId=${currentRoomId}`);
     }
-    setRoomId(id);
   }, []);
 
-  // חיבור לסוקט
+  // חיבור ל-socket לפי roomId
   const { sendMessage, isReady } = useSocket((data) => {
-    if (data.type === "gameStarted") {
-      navigate(`/polo-room?roomId=${roomId}`);
-    }
-
-    if (data.type === "start_game") {
-      setQuestion(data.question);
-      setAnswers(data.answers);
-      setCorrectAnswer(data.correctAnswer);
-      setGameStarted(true);
+    if (data.type === "game_starting") {
+      navigate(`/poloroom?roomId=${roomId}`);
     }
 
     if (data.type === "player_list") {
@@ -51,82 +32,73 @@ function PoloGame() {
     }
   }, roomId);
 
-  // שליחת הודעת הצטרפות ברגע שהסוקט מוכן
+  const handleStartGame = () => {
+    sendMessage({ type: "start_game" });
+  };
+
+  // קבלת roomId מה-URL או יצירת חדש
+  useEffect(() => {
+    let id = searchParams.get("roomId");
+    if (!id) {
+      id = Math.random().toString(36).substring(2, 8);
+      window.history.replaceState(null, "", `/polo?roomId=${id}`);
+      isOwner.current = true;
+      localStorage.setItem("isOwner", "true");
+    } else {
+      isOwner.current = localStorage.getItem("isOwner") === "true";
+    }
+    setRoomId(id);
+  }, []);
+
+  // הצטרפות לחדר כשהסוקט מוכן
   useEffect(() => {
     if (!isReady || !roomId) return;
 
-    const name = localStorage.getItem("playerName");
-    const avatar = localStorage.getItem("avatar");
-
     if (!name || !avatar) {
-      setRedirectMsg("אנא בחר שם ואווטאר כדי להצטרף למשחק 🎭");
-      navigate(`/profile?redirect=polo&room=${roomId}`);
+      navigate(`/profile?redirect=polo&roomId=${roomId}`);
       return;
     }
 
     sendMessage({
       type: "join",
-      player: { name, avatar },
+      name,
+      avatar,
     });
   }, [isReady, roomId]);
 
-  const handleAnswerClick = (answer) => {
-    setSelected(answer);
-    sendMessage({ type: "answer", answer, name });
-  };
-
-  const handleStartGame = () => {
-    sendMessage({ type: "startGame" });
-  };
-
-  const shareLink = `${window.location.origin}/polo?room=${roomId}`;
+  const shareLink = `${window.location.origin}/polo?roomId=${roomId}`;
 
   return (
-    <div className={gameStarted ? "game-layout-body" : "polo-container"}>
-      {!gameStarted ? (
-        <div className="polo-card">
-          <h2>חדר: {roomId}</h2>
-
-          {redirectMsg && (
-            <div className="redirect-msg">{redirectMsg}</div>
-          )}
-
-          <p>👥 שחקנים:</p>
-          <div className="player-list">
-            {players.map((p, i) => (
-              <div key={i} className="player-card">
-                <img src={p.avatar} alt="avatar" />
-                <span>{p.name}</span>
-              </div>
-            ))}
-          </div>
-
-          <button
-            onClick={() => navigator.clipboard.writeText(shareLink)}
-            className="share-btn"
-          >
-            🔗 העתק קישור לחדר
-          </button>
-
-          {isOwner.current ? (
-            <button onClick={handleStartGame} className="share-btn start-btn">
-              🚀 התחל משחק
-            </button>
-          ) : (
-            <div className="waiting-message">
-              ממתינים שהמנהל יתחיל את המשחק 🎮
+    <div className="polo-container">
+      <div className="polo-card">
+        <h2>חדר: {roomId}</h2>
+        <p>👥 שחקנים:</p>
+        <div className="player-list">
+          {players.map((p, i) => (
+            <div key={i} className="player-card">
+              <img src={p.avatar} alt="avatar" />
+              <span>{p.name}</span>
             </div>
-          )}
+          ))}
         </div>
-      ) : (
-        <GameLayout
-          question={question}
-          answers={answers}
-          selected={selected}
-          correctAnswer={correctAnswer}
-          onAnswerClick={handleAnswerClick}
-        />
-      )}
+
+        <button
+          onClick={() => navigator.clipboard.writeText(shareLink)}
+          className="share-btn"
+        >
+          🔗 העתק קישור לחדר
+        </button>
+
+        {isOwner.current ? (
+          <button onClick={handleStartGame} className="share-btn start-btn">
+            🚀 התחל משחק
+          </button>
+        ) : (
+          <div className="waiting-message">
+            🎮 ממתינים שהמנהל יתחיל את המשחק
+          </div>
+        )}
+      </div>
     </div>
   );
 }
