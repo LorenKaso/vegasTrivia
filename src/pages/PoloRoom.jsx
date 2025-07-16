@@ -23,15 +23,16 @@ function PoloRoom() {
   const [fastest, setFastest] = useState(null);
   const [localTimer, setLocalTimer] = useState(30);
   const [usedDouble, setUsedDouble] = useState(false);
+  const [questionId, setQuestionId] = useState(null);
 
   const playerName = localStorage.getItem("playerName") || "אנונימי";
   const avatar = localStorage.getItem("avatar") || "";
   const isOwner = localStorage.getItem("isOwner") === "true";
   const hasAnswered = useRef(false);
+  const timerRef = useRef(null);
 
   const handleSocketMessage = (data) => {
     if (data.type === "player_list") {
-      // סינון כפילויות לפי שם בלבד
       const unique = [];
       const seen = new Set();
       data.players.forEach((p) => {
@@ -43,17 +44,23 @@ function PoloRoom() {
       setPlayers(unique);
     }
 
-    if (data.type === "question") {
-      setQuestion(data.question.question);
-      setAnswers(data.question.answers);
-      setQuestionObject(data.question);
-      setReveal(false);
-      setSelectedAnswer(null);
-      setFastest(null);
-      hasAnswered.current = false;
-      setUsedDouble(false);
-      setLocalTimer(30);
-    }
+  if (data.type === "question") {
+    setQuestion(data.question.question);
+    setQuestionId(data.question.id);
+    setAnswers(data.question.answers);
+    setQuestionObject(data.question);
+    setReveal(false);
+    setSelectedAnswer(null);
+    setFastest(null);
+    hasAnswered.current = false;
+    setUsedDouble(false);
+
+    const now = Date.now() / 1000; 
+    const start = data.question.startTime;
+    const secondsLeft = Math.max(0, Math.floor(start + 30 - now));
+    setLocalTimer(secondsLeft);
+  }
+
 
     if (data.type === "reveal") {
       setCorrectAnswer(data.correctAnswer);
@@ -69,6 +76,10 @@ function PoloRoom() {
 
     if (data.type === "game_over") {
       setGameOver(true);
+    }
+
+    if (data.type === "friend_suggestion") {
+      alert("🤖 חבר ממליץ על: " + data.suggestion);
     }
   };
 
@@ -104,9 +115,8 @@ function PoloRoom() {
   };
 
   const handleFriendHelp = () => {
-    if (!questionObject) return;
-    const correct = questionObject.correctAnswer;
-    alert("🤖 חבר ממליץ על: " + correct);
+    if (!isReady) return;
+    sendMessage({ type: "friend_help" });
   };
 
   const handleDoublePoints = () => {
@@ -116,19 +126,22 @@ function PoloRoom() {
   };
 
   useEffect(() => {
-    if (!question || reveal) return;
-    setLocalTimer(30);
-    const interval = setInterval(() => {
+    if (!question || reveal || questionId === null) return;
+
+    clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
       setLocalTimer((prev) => {
         if (prev <= 1) {
-          clearInterval(interval);
+          clearInterval(timerRef.current);
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
-    return () => clearInterval(interval);
-  }, [question, reveal]);
+
+    return () => clearInterval(timerRef.current);
+  }, [questionId, reveal]);
+
 
   const formatTime = (seconds) => {
     const mins = String(Math.floor(seconds / 60)).padStart(2, "0");
