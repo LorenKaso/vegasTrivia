@@ -32,7 +32,7 @@ class RoomState:
         self.current_question_index = 0
         self.answers_received = {}
         self.scores = {}
-        self.double_used = set()
+        self.double_used = {} 
         self.reveal_sent = False
         self.current_question = None
 
@@ -112,6 +112,13 @@ class ConnectionManager:
         if room.reveal_sent:
             return
 
+        if double and name in room.double_used:
+            print(f"⛔ {name} ניסה להשתמש שוב בכפול")
+            return
+
+        if double:
+            room.double_used[name] = room.current_question_index
+
         current_question = room.current_question
         correct_answer = current_question["correctAnswer"]
         room.answers_received[name] = answer
@@ -136,7 +143,7 @@ class ConnectionManager:
                 points = 15 if is_first else 10
                 if is_first and difficulty > 6:
                     points += 5
-                if name in room.double_used:
+                if room.double_used.get(name) == room.current_question_index:
                     points *= 2
             room.scores[name] = room.scores.get(name, 0) + points
 
@@ -239,6 +246,7 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str):
             elif data["type"] == "start_game":
                 print(f"📨 Start game from room {room_id}")
                 room_states[room_id] = RoomState()
+                await manager.broadcast_player_list(room_id)
                 await manager.broadcast(room_id, {"type": "game_starting"})
                 await asyncio.sleep(3)
                 await manager.send_next_question(room_id)
@@ -255,17 +263,32 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str):
                 if not room or not room.current_question:
                     continue
 
+                current_id = room.current_question_index
+                requested_id = data.get("questionId")
+
+                requested_id = data.get("questionId")
+                if requested_id is None or requested_id != current_id:
+                    print(f"⛔ שחקן ביקש עזרה לשאלה לא תואמת. נוכחית: {current_id}, התבקשה: {requested_id}")
+                    continue
+
+
                 correct = room.current_question["correctAnswer"]
                 options = room.current_question["answers"]
 
-                # 75% סיכוי לתשובה נכונה
-                is_correct = random.random() < 0.75
+                is_correct = random.random() < 0.85
                 suggestion = correct if is_correct else random.choice([a for a in options if a != correct])
 
                 await websocket.send_text(json.dumps({
                     "type": "friend_suggestion",
-                    "suggestion": suggestion
+                    "suggestion": suggestion,
+                    "question": {
+                        "id": current_id,
+                        "question": room.current_question["question"],
+                        "answers": room.current_question["answers"],
+                        "correctAnswer": correct,
+                    }
                 }))
+
 
     except WebSocketDisconnect:
         manager.disconnect(room_id, websocket)
