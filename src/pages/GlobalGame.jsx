@@ -29,10 +29,10 @@ function GlobalGame() {
 
     const initialPlayers = [
       { id: 1, name: playerName, score: 0, avatar, answer: null, isBot: false },
-      { id: 2, name: "בוט 1", score: 0, avatar: "", answer: null, isBot: true },
-      { id: 3, name: "בוט 2", score: 0, avatar: "", answer: null, isBot: true },
-      { id: 4, name: "בוט 3", score: 0, avatar: "", answer: null, isBot: true },
-      { id: 5, name: "בוט 4", score: 0, avatar: "", answer: null, isBot: true },
+      { id: 2, name: "רוברט", score: 0, avatar: "", answer: null, isBot: true },
+      { id: 3, name: "ריטבוט", score: 0, avatar: "", answer: null, isBot: true },
+      { id: 4, name: "בטי", score: 0, avatar: "", answer: null, isBot: true },
+      { id: 5, name: "ברטה", score: 0, avatar: "", answer: null, isBot: true },
     ];
 
     setPlayers(initialPlayers);

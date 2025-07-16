@@ -14,6 +14,7 @@ function GameLayout({
   children,
   players = [],
   showScoreboard = true,
+  showPowerUps = true,
 }) {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
@@ -47,11 +48,11 @@ function GameLayout({
     const random = Math.random();
     let suggestion;
 
-    if (random <= 0.8) {
-      // 80% מהפעמים - החבר בוחר את התשובה הנכונה
+    if (random <= 0.85) {
+      // 85% מהפעמים - החבר בוחר את התשובה הנכונה
       suggestion = correctAnswer;
     } else {
-      // 20% מהפעמים - החבר בוחר תשובה שגויה אקראית
+      // 15% מהפעמים - החבר בוחר תשובה שגויה אקראית
       const wrongAnswers = answers.filter(ans => ans !== correctAnswer);
       suggestion = wrongAnswers[Math.floor(Math.random() * wrongAnswers.length)];
     }
@@ -118,12 +119,15 @@ function GameLayout({
 
  
       {/* עזרי המשחק */}
-      <PowerUps onFiftyFifty={handleFiftyFifty} 
-                onHelp={handleHelp} 
-                onDoublePoints={onDoublePoints}
-                helpSuggestion={helpSuggestion}
+      {showPowerUps && (
+      <PowerUps
+        onFiftyFifty={handleFiftyFifty}
+        onHelp={handleHelp}
+        onDoublePoints={onDoublePoints}
+        helpSuggestion={helpSuggestion}
       />
-                
+    )}
+
       {showScoreboard && <Scoreboard players={players} />}
 
       {showPopup && (

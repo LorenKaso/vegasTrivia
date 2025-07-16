@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import useSocket from "../hooks/useSocket";
 import GameLayout from "../components/GameLayout";
-import PowerUps from "../components/PowerUps";
 import "../components/GameLayout.css";
 import "./PoloRoom.css";
 
@@ -24,6 +23,13 @@ function PoloRoom() {
   const [localTimer, setLocalTimer] = useState(30);
   const [usedDouble, setUsedDouble] = useState(false);
   const [questionId, setQuestionId] = useState(null);
+  const [fiftyDisabled, setFiftyDisabled] = useState([]);
+  const [friendSuggestion, setFriendSuggestion] = useState(null);
+  const [doublePointsActivated, setDoublePointsActivated] = useState(false);
+  const [usedDoubleGlobal, setUsedDoubleGlobal] = useState(false);
+  const [showDoubleMessage, setShowDoubleMessage] = useState(false);
+  const [usedFiftyFifty, setUsedFiftyFifty] = useState(false);
+  const [usedFriendHelpGlobal, setUsedFriendHelpGlobal] = useState(false);
 
   const playerName = localStorage.getItem("playerName") || "אנונימי";
   const avatar = localStorage.getItem("avatar") || "";
@@ -44,23 +50,26 @@ function PoloRoom() {
       setPlayers(unique);
     }
 
-  if (data.type === "question") {
-    setQuestion(data.question.question);
-    setQuestionId(data.question.id);
-    setAnswers(data.question.answers);
-    setQuestionObject(data.question);
-    setReveal(false);
-    setSelectedAnswer(null);
-    setFastest(null);
-    hasAnswered.current = false;
-    setUsedDouble(false);
+    if (data.type === "question") {
+      setQuestion(data.question.question);
+      setQuestionId(data.question.id);
+      setAnswers(data.question.answers);
+      setQuestionObject(data.question);
+      setReveal(false);
+      setSelectedAnswer(null);
+      setFastest(null);
+      hasAnswered.current = false;
+      setUsedDouble(false);
+      setFriendSuggestion(null);
+      setFiftyDisabled([]);
+      setDoublePointsActivated(false);
+      setShowDoubleMessage(false);
 
-    const now = Date.now() / 1000; 
-    const start = data.question.startTime;
-    const secondsLeft = Math.max(0, Math.floor(start + 30 - now));
-    setLocalTimer(secondsLeft);
-  }
-
+      const now = Date.now() / 1000;
+      const start = data.question.startTime;
+      const secondsLeft = Math.max(0, Math.floor(start + 30 - now));
+      setLocalTimer(secondsLeft);
+    }
 
     if (data.type === "reveal") {
       setCorrectAnswer(data.correctAnswer);
@@ -79,7 +88,7 @@ function PoloRoom() {
     }
 
     if (data.type === "friend_suggestion") {
-      alert("🤖 חבר ממליץ על: " + data.suggestion);
+      setFriendSuggestion(data.suggestion);
     }
   };
 
@@ -105,29 +114,39 @@ function PoloRoom() {
     if (!isReady || hasAnswered.current || reveal) return;
     hasAnswered.current = true;
     setSelectedAnswer(answer);
-    if (double) setUsedDouble(true);
     sendMessage({
       type: "answer",
       name: playerName,
       answer,
       double,
     });
+    setFriendSuggestion(null);
   };
 
   const handleFriendHelp = () => {
-    if (!isReady) return;
-    sendMessage({ type: "friend_help" });
+    if (!isReady || questionId === null || usedFriendHelpGlobal) return;
+    sendMessage({ type: "friend_help", questionId });
+    setUsedFriendHelpGlobal(true);
   };
 
   const handleDoublePoints = () => {
-    if (usedDouble || !questionObject || selectedAnswer || reveal) return;
-    alert("🏅 הניקוד הבא יהיה כפול!");
+    if (usedDoubleGlobal || usedDouble || !questionObject || selectedAnswer || reveal) return;
     setUsedDouble(true);
+    setUsedDoubleGlobal(true);
+    setDoublePointsActivated(true);
+    setShowDoubleMessage(true);
+  };
+
+  const handleFiftyFifty = () => {
+    if (!questionObject || usedFiftyFifty) return;
+    const incorrect = answers.filter((a) => a !== questionObject.correctAnswer);
+    const toDisable = incorrect.sort(() => 0.5 - Math.random()).slice(0, 2);
+    setFiftyDisabled(toDisable);
+    setUsedFiftyFifty(true);
   };
 
   useEffect(() => {
     if (!question || reveal || questionId === null) return;
-
     clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
       setLocalTimer((prev) => {
@@ -138,10 +157,8 @@ function PoloRoom() {
         return prev - 1;
       });
     }, 1000);
-
     return () => clearInterval(timerRef.current);
   }, [questionId, reveal]);
-
 
   const formatTime = (seconds) => {
     const mins = String(Math.floor(seconds / 60)).padStart(2, "0");
@@ -152,22 +169,18 @@ function PoloRoom() {
   return (
     <>
       {question && !reveal && (
-        <div className="monopoly-timer">
-          {formatTime(localTimer)}⏱️
-        </div>
+        <div className="monopoly-timer">{formatTime(localTimer)}⏱️</div>
       )}
 
       <GameLayout
         question={question}
-        answers={answers}
+        answers={answers.filter((a) => !fiftyDisabled.includes(a))}
         selected={selectedAnswer}
         correctAnswer={correctAnswer}
         onAnswerClick={(ans) => handleAnswer(ans, usedDouble)}
         onDoublePoints={handleDoublePoints}
-        players={players.map((p) => ({
-          ...p,
-          score: scores[p.name] || 0,
-        }))}
+        players={players.map((p) => ({ ...p, score: scores[p.name] || 0 }))}
+        showPowerUps={false}
       >
         {isOwner && !question && (
           <button className="start-game-btn" onClick={handleStart}>
@@ -176,11 +189,46 @@ function PoloRoom() {
         )}
 
         {!reveal && question && (
-          <PowerUps
-            onFriendHelp={handleFriendHelp}
-            onDoublePoints={handleDoublePoints}
-            usedDouble={usedDouble}
-          />
+          <div className="custom-powerups">
+            <div className="power-up-btn-wrapper">
+              {friendSuggestion && (
+                <div className="suggestion-text">
+                  🤖 החבר חושב: {friendSuggestion}
+                </div>
+              )}
+              <button
+                className={`power-up-btn ${usedFriendHelpGlobal ? "disabled-btn" : ""}`}
+                onClick={handleFriendHelp}
+                disabled={usedFriendHelpGlobal}
+              >
+                <span className="emoji">🤖</span>
+                <span className="label">עזרת חבר</span>
+              </button>
+            </div>
+
+            <div className="power-up-btn-wrapper">
+              {doublePointsActivated && showDoubleMessage && (
+                <div className="feedback-message">🏅 ניקוד כפול הופעל!</div>
+              )}
+              <button
+                className={`power-up-btn ${usedDoubleGlobal ? "disabled-btn" : ""}`}
+                onClick={handleDoublePoints}
+              >
+                <span className="emoji">×2</span>
+                <span className="label">הכפלת ניקוד</span>
+              </button>
+            </div>
+
+            <div className="power-up-btn-wrapper">
+              <button
+                className={`power-up-btn ${usedFiftyFifty ? "disabled-btn" : ""}`}
+                onClick={handleFiftyFifty}
+                disabled={usedFiftyFifty}
+              >
+                <span className="emoji">50/50</span>
+              </button>
+            </div>
+          </div>
         )}
 
         {reveal && <p>✔️ התשובה הנכונה: {correctAnswer}</p>}

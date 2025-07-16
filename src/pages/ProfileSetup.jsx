@@ -10,11 +10,11 @@ function ProfileSetup() {
   const [avatarError, setAvatarError] = useState(false);
 
   const avatars = [
-    "/images/monopoly1.png",
-    "/images/monopoly2.png",
-    "/images/monopoly3.png",
-    "/images/monopoly4.png",
-    "/images/monopoly5.png"
+    "/images/b1.png",
+    "/images/m1.png",
+    "/images/m2.png",
+    "/images/w1.png",
+    "/images/w2.png"
   ];
 
   const handleStart = () => {

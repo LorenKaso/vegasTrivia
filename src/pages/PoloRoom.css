@@ -85,11 +85,9 @@
   font-weight: bold;
 }
 
-/* סרגל העזרים - שורת כפתורים */
+/* ✅ עודכן – מיקום ברור יותר ונמוך למסך */
 .power-ups-bar {
   position: absolute;
-  top: 500px;
-  right: 0;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
@@ -97,9 +95,8 @@
   gap: 1rem;
   justify-content: center;
   align-items: center;
-  z-index: 500;
+  z-index: 999;
 }
-
 
 /* כפתור עזר עגול עם טקסט ואימוג' */
 .power-up-btn {
@@ -126,13 +123,11 @@
   background-color: #0077aa;
 }
 
-/* אימוג' בראש הכפתור */
 .power-up-btn .emoji {
   font-size: 1.1rem;
   margin-bottom: 0.2rem;
 }
 
-/* טקסט כיתוב קטן יותר */
 .power-up-btn .label {
   font-size: 0.6rem;
   line-height: 1;
@@ -156,7 +151,6 @@
   overflow: hidden;
   white-space: nowrap;
 }
-
 
 .start-game-btn {
   background-color: #4caf50;
@@ -213,4 +207,78 @@
     min-width: 90px;
   }
 }
+
+.custom-powerups {
+  position: absolute;
+  bottom: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.2rem; 
+  min-height: 70px;
+}
+
+.feedback-message {
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #0077aa;
+  font-size: 0.7rem;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 8px;
+  margin-bottom: 5px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+  animation: fadeInOut 3s ease-out;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(5px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-5px); }
+}
+
+/* ..design for disabled button powerUps. */
+.disabled-btn {
+  background-color: #333 !important;
+  border-color: #999;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.disabled-btn {
+  background-color: #333 !important;
+  border-color: #999;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.suggestion-text {
+  background-color: #fff8c4;
+  border: 1px solid #f0d000;
+  color: #333;
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 8px; /* מרווח בין ההודעה לכפתור שמתחתיה */
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.disabled-btn {
+  opacity: 0.5;
+  pointer-events: none;
+  filter: grayscale(100%);
+}
+
+
 
