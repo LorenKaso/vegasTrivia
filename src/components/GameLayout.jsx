@@ -11,16 +11,22 @@ function GameLayout({
   correctAnswer,
   onAnswerClick,
   onDoublePoints,
-  children,
+  onFiftyFifty,
+  onHelp,
+  helpSuggestion,
+  disabledAnswers = [],
+  doublePointsActivated = false,
+  usedDoublePointsGlobal = false,
+  usedFiftyFiftyGlobal = false,
+  usedFriendHelpGlobal = false,
   players = [],
   showScoreboard = true,
   showPowerUps = true,
+  children,
 }) {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const [flashAnswer, setFlashAnswer] = useState(null);
-  const [disabledAnswers, setDisabledAnswers] = useState([]);
-  const [helpSuggestion, setHelpSuggestion] = useState(null);
 
   useEffect(() => {
     if (selected) {
@@ -30,38 +36,8 @@ function GameLayout({
     }
   }, [selected]);
 
-  //clean llm answer
-  useEffect(() => {
-    setHelpSuggestion("");
-  }, [question]);
-
-
-  const handleFiftyFifty = () => {
-    const incorrectAnswers = answers.filter(ans => ans !== correctAnswer);
-    const shuffled = incorrectAnswers.sort(() => 0.5 - Math.random());
-    const answersToRemove = shuffled.slice(0, 2);
-
-    setDisabledAnswers(answersToRemove);
-  };
-
-  const handleHelp = () => {
-    const random = Math.random();
-    let suggestion;
-
-    if (random <= 0.85) {
-      // 85% מהפעמים - החבר בוחר את התשובה הנכונה
-      suggestion = correctAnswer;
-    } else {
-      // 15% מהפעמים - החבר בוחר תשובה שגויה אקראית
-      const wrongAnswers = answers.filter(ans => ans !== correctAnswer);
-      suggestion = wrongAnswers[Math.floor(Math.random() * wrongAnswers.length)];
-    }
-    setHelpSuggestion(suggestion);
-  };
-
   const handleAnswerClick = (answer) => {
     if (!selected && !disabledAnswers.includes(answer)) {
-      setHelpSuggestion("");  // מוחק את הטקסט של החבר אחרי בחירה בתשובה
       onAnswerClick(answer);
     }
   };
@@ -80,9 +56,15 @@ function GameLayout({
                 fontSize: question.split(" ").length > 8 ? "0.9rem" : "1.2rem",
               }}
             >
-            {question}
-          </h2>
+              {question}
+            </h2>
           </div>
+
+          {doublePointsActivated && (
+            <div className="double-points-indicator">
+              ✨ ניקוד כפול הופעל לשאלה זו!
+            </div>
+          )}
 
           <div className="answers-grid">
             {answers.map((answer) => {
@@ -105,7 +87,7 @@ function GameLayout({
                 <div
                   key={answer}
                   className={className}
-                  onClick={() => !selected && !isDisabled && onAnswerClick(answer)}
+                  onClick={() => handleAnswerClick(answer)}
                 >
                   {answer}
                 </div>
@@ -117,16 +99,17 @@ function GameLayout({
         </div>
       </div>
 
- 
-      {/* עזרי המשחק */}
       {showPowerUps && (
-      <PowerUps
-        onFiftyFifty={handleFiftyFifty}
-        onHelp={handleHelp}
-        onDoublePoints={onDoublePoints}
-        helpSuggestion={helpSuggestion}
-      />
-    )}
+        <PowerUps
+          onFiftyFifty={onFiftyFifty}
+          onHelp={onHelp}
+          onDoublePoints={onDoublePoints}
+          helpSuggestion={helpSuggestion}
+          usedFiftyFiftyGlobal={usedFiftyFiftyGlobal}
+          usedFriendHelpGlobal={usedFriendHelpGlobal}
+          usedDoublePointsGlobal={usedDoublePointsGlobal}
+        />
+      )}
 
       {showScoreboard && <Scoreboard players={players} />}
 
@@ -140,8 +123,12 @@ function GameLayout({
           }}
         >
           <div className="popup-buttons">
-            <button id="confirm-exit-btn" onClick={() => navigate("/home")}>צא למסך הבית</button>
-            <button id="cancel-exit-btn" onClick={() => setShowPopup(false)}>הישאר במשחק</button>
+            <button id="confirm-exit-btn" onClick={() => navigate("/home")}>
+              צא למסך הבית
+            </button>
+            <button id="cancel-exit-btn" onClick={() => setShowPopup(false)}>
+              הישאר במשחק
+            </button>
           </div>
         </div>
       )}

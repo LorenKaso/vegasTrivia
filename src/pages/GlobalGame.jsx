@@ -5,7 +5,6 @@ import GameLayout from "../components/GameLayout";
 import Timer from "../components/Timer";
 import "../components/GameLayout.css";
 import "./GlobalGame.css";
-import Scoreboard from "../components/Scoreboard";
 
 function GlobalGame() {
   const navigate = useNavigate();
@@ -19,9 +18,52 @@ function GlobalGame() {
   const [showNext, setShowNext] = useState(false);
   const [timeExpired, setTimeExpired] = useState(false);
   const [players, setPlayers] = useState([]);
+  const [usedDoublePointsGlobal, setUsedDoublePointsGlobal] = useState(false);
+  const [usedFiftyFiftyGlobal, setUsedFiftyFiftyGlobal] = useState(false);
+  const [usedFriendHelpGlobal, setUsedFriendHelpGlobal] = useState(false);
+  const [helpSuggestion, setHelpSuggestion] = useState(null);
+  const [disabledAnswers, setDisabledAnswers] = useState([]);
 
   const playerName = localStorage.getItem("playerName") || "אנונימי";
   const avatar = localStorage.getItem("avatar") || "";
+
+  const handleDoublePoints = () => {
+    if (usedDoublePointsGlobal || selected || timeExpired) return;
+    setUsedDoublePointsGlobal(true);
+    setDoublePoints(true);
+  };
+
+  const handleFiftyFifty = () => {
+    if (usedFiftyFiftyGlobal || selected || timeExpired) return;
+    setUsedFiftyFiftyGlobal(true);
+
+    if (currentQuestion) {
+      const incorrectAnswers = currentQuestion.answers.filter(
+        (a) => a !== currentQuestion.correctAnswer
+      );
+      const answersToDisable = incorrectAnswers.slice(0, 2);
+      setDisabledAnswers(answersToDisable);
+    }
+  };
+
+  const handleFriendHelp = () => {
+    if (usedFriendHelpGlobal || selected || timeExpired) return;
+    setUsedFriendHelpGlobal(true);
+
+    const random = Math.random();
+    let suggestion;
+
+    if (random <= 0.85) {
+      suggestion = currentQuestion.correctAnswer;
+    } else {
+      const wrongAnswers = currentQuestion.answers.filter(
+        (a) => a !== currentQuestion.correctAnswer
+      );
+      suggestion = wrongAnswers[Math.floor(Math.random() * wrongAnswers.length)];
+    }
+
+    setHelpSuggestion(suggestion);
+  };
 
   useEffect(() => {
     const q = getNextQuestion();
@@ -41,8 +83,7 @@ function GlobalGame() {
   useEffect(() => {
     if (!currentQuestion) return;
 
-    // בוטים עונים רנדומלית אחרי 2-8 שניות
-    players.forEach(player => {
+    players.forEach((player) => {
       if (player.isBot) {
         const answerTime = Math.random() * 6000 + 2000;
         setTimeout(() => {
@@ -82,22 +123,30 @@ function GlobalGame() {
   };
 
   const handlePlayerAnswer = (playerId, answer) => {
-    setPlayers(prev => {
-      const updatedPlayers = prev.map(p =>
+    setPlayers((prev) => {
+      const updatedPlayers = prev.map((p) =>
         p.id === playerId ? { ...p, answer } : p
       );
 
-      const correctPlayers = updatedPlayers.filter(p => p.answer === currentQuestion.correctAnswer);
-      const isFirstCorrect = correctPlayers.length === 1 && answer === currentQuestion.correctAnswer;
+      const correctPlayers = updatedPlayers.filter(
+        (p) => p.answer === currentQuestion.correctAnswer
+      );
+      const isFirstCorrect =
+        correctPlayers.length === 1 && answer === currentQuestion.correctAnswer;
       const isCorrect = answer === currentQuestion.correctAnswer;
       const difficulty = currentQuestion.difficulty;
-      const points = calculateScore(isCorrect, isFirstCorrect, difficulty, doublePoints);
+      const points = calculateScore(
+        isCorrect,
+        isFirstCorrect,
+        difficulty,
+        doublePoints
+      );
 
-      const newPlayers = updatedPlayers.map(p =>
+      const newPlayers = updatedPlayers.map((p) =>
         p.id === playerId ? { ...p, score: p.score + points } : p
       );
 
-      const allAnswered = newPlayers.every(p => p.answer !== null);
+      const allAnswered = newPlayers.every((p) => p.answer !== null);
 
       if (allAnswered && !timeExpired) {
         revealAnswer();
@@ -122,9 +171,12 @@ function GlobalGame() {
     if (timeExpired) return;
 
     const randomValue = Math.random();
-    const botAnswer = randomValue < 0.7
-      ? currentQuestion.correctAnswer
-      : currentQuestion.answers.filter(a => a !== currentQuestion.correctAnswer)[Math.floor(Math.random() * (currentQuestion.answers.length - 1))];
+    const botAnswer =
+      randomValue < 0.7
+        ? currentQuestion.correctAnswer
+        : currentQuestion.answers.filter(
+            (a) => a !== currentQuestion.correctAnswer
+          )[Math.floor(Math.random() * (currentQuestion.answers.length - 1))];
 
     handlePlayerAnswer(botId, botAnswer);
   };
@@ -138,9 +190,10 @@ function GlobalGame() {
     setTimeLeft(30);
     setShowNext(false);
     setTimeExpired(false);
-    setPlayers(prev =>
-      prev.map(p => ({ ...p, answer: null }))
-    );
+    setHelpSuggestion(null);
+    setDisabledAnswers([]);
+    setDoublePoints(false);
+    setPlayers((prev) => prev.map((p) => ({ ...p, answer: null })));
   }, [showNext]);
 
   if (!currentQuestion) return <h2>טוען שאלות...</h2>;
@@ -157,7 +210,15 @@ function GlobalGame() {
         onAnswerClick={handleAnswerClick}
         players={players}
         showScoreboard={true}
-        onDoublePoints={() => setDoublePoints(true)}
+        onDoublePoints={handleDoublePoints}
+        onFiftyFifty={handleFiftyFifty}
+        onHelp={handleFriendHelp}
+        usedDoublePointsGlobal={usedDoublePointsGlobal}
+        usedFiftyFiftyGlobal={usedFiftyFiftyGlobal}
+        usedFriendHelpGlobal={usedFriendHelpGlobal}
+        helpSuggestion={helpSuggestion}
+        disabledAnswers={disabledAnswers}
+        doublePointsActivated={doublePoints}
       />
     </div>
   );
