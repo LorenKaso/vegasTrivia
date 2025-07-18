@@ -5,6 +5,7 @@ import GameLayout from "../components/GameLayout";
 import Timer from "../components/Timer";
 import "../components/GameLayout.css";
 import "./GlobalGame.css";
+import FinalScoreboard from "../components/FinalScoreboard";
 
 function GlobalGame() {
   const navigate = useNavigate();
@@ -23,6 +24,8 @@ function GlobalGame() {
   const [usedFriendHelpGlobal, setUsedFriendHelpGlobal] = useState(false);
   const [helpSuggestion, setHelpSuggestion] = useState(null);
   const [disabledAnswers, setDisabledAnswers] = useState([]);
+  const [gameOver, setGameOver] = useState(false);
+  const [questionCounter, setQuestionCounter] = useState(1);
 
   const playerName = localStorage.getItem("playerName") || "אנונימי";
   const avatar = localStorage.getItem("avatar") || "";
@@ -185,6 +188,18 @@ function GlobalGame() {
     if (!showNext) return;
 
     const nextQ = getNextQuestion();
+
+    if (!nextQ) {
+      console.log("הסתיימו כל 10 השאלות — מציג לוח סיכום");
+      console.log("מספר השאלה היה:", questionCounter);
+      setCurrentQuestion(null);
+      setGameOver(true);
+      return;
+    }
+
+    setQuestionCounter((prev) => prev + 1);
+    console.log("שאלה מס׳:", questionCounter + 1);
+
     setCurrentQuestion(nextQ);
     setSelected(null);
     setTimeLeft(30);
@@ -193,8 +208,19 @@ function GlobalGame() {
     setHelpSuggestion(null);
     setDisabledAnswers([]);
     setDoublePoints(false);
-    setPlayers((prev) => prev.map((p) => ({ ...p, answer: null })));
+    setPlayers((prev) =>
+      prev.map((p) => ({ ...p, answer: null }))
+    );
   }, [showNext]);
+
+  if (gameOver) {
+    return (
+      <FinalScoreboard
+        players={players}
+        title="טבלת סיכום - עולמי"
+      />
+    );
+  }
 
   if (!currentQuestion) return <h2>טוען שאלות...</h2>;
 

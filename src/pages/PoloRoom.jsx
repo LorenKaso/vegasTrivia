@@ -4,6 +4,7 @@ import useSocket from "../hooks/useSocket";
 import GameLayout from "../components/GameLayout";
 import "../components/GameLayout.css";
 import "./PoloRoom.css";
+import FinalScoreboard from "../components/FinalScoreboard";
 
 function PoloRoom() {
   const [searchParams] = useSearchParams();
@@ -30,6 +31,7 @@ function PoloRoom() {
   const [showDoubleMessage, setShowDoubleMessage] = useState(false);
   const [usedFiftyFifty, setUsedFiftyFifty] = useState(false);
   const [usedFriendHelpGlobal, setUsedFriendHelpGlobal] = useState(false);
+  const [questionCount, setQuestionCount] = useState(0);
 
   const playerName = localStorage.getItem("playerName") || "אנונימי";
   const avatar = localStorage.getItem("avatar") || "";
@@ -51,6 +53,9 @@ function PoloRoom() {
     }
 
     if (data.type === "question") {
+      setQuestionCount(prev => prev + 1);
+      console.log("שאלה מספר:", questionCount + 1);
+
       setQuestion(data.question.question);
       setQuestionId(data.question.id);
       setAnswers(data.question.answers);
@@ -160,11 +165,39 @@ function PoloRoom() {
     return () => clearInterval(timerRef.current);
   }, [questionId, reveal]);
 
+  useEffect(() => {
+    if (questionCount >= 10) {
+      console.log("👉 סיום המשחק - 10 שאלות");
+      setGameOver(true);
+    }
+  }, [questionCount]);
+  
   const formatTime = (seconds) => {
     const mins = String(Math.floor(seconds / 60)).padStart(2, "0");
     const secs = String(seconds % 60).padStart(2, "0");
     return `${mins}:${secs}`;
   };
+
+
+
+  if (gameOver || questionCount >= 10) {
+    const finalPlayers = players
+      .map((p) => ({
+        ...p,
+        score: scores[p.name] || 0,
+      }))
+      .sort((a, b) => b.score - a.score); // מיון לפי ניקוד
+
+    return (
+      <FinalScoreboard
+        players={finalPlayers}
+        title="טבלת סיכום - פולו"
+        className="summary-mode"
+    />
+  );
+}
+
+
 
   return (
     <>

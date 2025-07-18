@@ -8,19 +8,24 @@ function FinalScoreboard({ players, title = "טבלת סיכום" }) {
 
   return (
     <div className="profile-setup-container">
-      <div className="profile-card">
+      <div className="profile-card summary-mode">
         <h2 className="scoreboard-title">{title}</h2>
 
         <div className="score-list">
-          {sortedPlayers.map((player, index) => (
+        {sortedPlayers.map((player, index) => (
             <div className="score-row" key={index}>
-              <span>{index + 1}.</span>
-              <img src={player.avatar || "/images/default-avatar.png"} alt="avatar" className="avatar" />
-              <span>{player.name}</span>
-              <span>{player.score} נק'</span>
+            <span className="rank">{index + 1}.</span>
+            <img
+                src={player.avatar || "/images/b1.png"}
+                alt="avatar"
+                className="avatar"
+            />
+            <span className="score-name">{player.name}</span>
+            <span className="score-points">{player.score} נק'</span>
             </div>
-          ))}
+        ))}
         </div>
+
 
         <button className="home-button" onClick={() => navigate("/home")}>
           חזרה לדף הבית

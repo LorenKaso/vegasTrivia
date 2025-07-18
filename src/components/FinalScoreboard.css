@@ -56,7 +56,7 @@ body, html {
   grid-template-columns: 2em 1fr auto auto auto;
   align-items: center;
   background-color: rgba(247, 247, 238, 0.9);
-  padding: 10px 70px;
+  padding: 6px 6px;
   border-radius: 12px;
   font-size: 1.2em;
   transition: transform 0.2s;
@@ -116,5 +116,21 @@ body, html {
   background-color: #125ea7;
   transform: scale(1.05);
 }
+
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 8px;
+}
+
+/* ריווח קומפקטי יותר רק בלוח סיכום */
+.summary-mode .score-row {
+  padding: 6px 20px;
+  gap: 25px;
+}
+
 
 
