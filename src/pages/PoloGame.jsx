@@ -13,7 +13,6 @@ function PoloGame() {
   const name = localStorage.getItem("playerName");
   const avatar = localStorage.getItem("avatar");
 
-  // מעבר לדף פרופיל אם חסר שם או אוואטר
   useEffect(() => {
     if (!name || !avatar) {
       const currentRoomId = searchParams.get("roomId") || "";
@@ -21,7 +20,6 @@ function PoloGame() {
     }
   }, []);
 
-  // חיבור ל-socket לפי roomId
   const { sendMessage, isReady } = useSocket((data) => {
     if (data.type === "game_starting") {
       navigate(`/poloroom?roomId=${roomId}`);
@@ -36,7 +34,6 @@ function PoloGame() {
     sendMessage({ type: "start_game" });
   };
 
-  // קבלת roomId מה-URL או יצירת חדש
   useEffect(() => {
     let id = searchParams.get("roomId");
     if (!id) {
@@ -50,7 +47,6 @@ function PoloGame() {
     setRoomId(id);
   }, []);
 
-  // הצטרפות לחדר כשהסוקט מוכן
   useEffect(() => {
     if (!isReady || !roomId) return;
 

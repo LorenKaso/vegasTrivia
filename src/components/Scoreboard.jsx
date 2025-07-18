@@ -18,9 +18,9 @@ function Scoreboard({ players }) {
         <table>
           <thead>
             <tr>
-              <th>מיקום</th>
-              <th>שם</th>
               <th>ניקוד</th>
+              <th>שם</th>
+              <th>מיקום</th>
             </tr>
           </thead>
           <tbody>
@@ -40,9 +40,10 @@ function Scoreboard({ players }) {
                     scoreChanged ? "score-change" : ""
                   }
                 >
-                  <td>{index + 1}</td>      {/* מיקום */}
-                  <td>{player.name}</td>     {/* שם */}
-                  <td>{player.score}</td>    {/* ניקוד */}
+                  <td>{player.score}</td>  {/* מיקום */}
+                  <td>{player.name}</td>  {/* שם */}
+                  <td>{index + 1}</td>   {/* מיקום */}
+
                 </tr>
               );
             })}

@@ -85,7 +85,6 @@
   font-weight: bold;
 }
 
-/* ✅ עודכן – מיקום ברור יותר ונמוך למסך */
 .power-ups-bar {
   position: absolute;
   bottom: 20px;
@@ -98,7 +97,6 @@
   z-index: 999;
 }
 
-/* כפתור עזר עגול עם טקסט ואימוג' */
 .power-up-btn {
   width: 60px;
   height: 60px;
@@ -265,7 +263,7 @@
   border-radius: 10px;
   font-weight: bold;
   text-align: center;
-  margin-bottom: 8px; /* מרווח בין ההודעה לכפתור שמתחתיה */
+  margin-bottom: 8px; 
   animation: fadeIn 0.3s ease-in;
 }
 

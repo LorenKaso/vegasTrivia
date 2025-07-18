@@ -18,6 +18,7 @@ function MonoGame() {
   const [timeLeft, setTimeLeft] = useState(30);
   const [showNext, setShowNext] = useState(false);
   const [timeExpired, setTimeExpired] = useState(false);
+  const [isFinishing, setIsFinishing] = useState(false);
 
   const [usedDoublePointsGlobal, setUsedDoublePointsGlobal] = useState(false);
   const [doublePointsActivated, setDoublePointsActivated] = useState(false);
@@ -25,7 +26,7 @@ function MonoGame() {
   const [usedFriendHelpGlobal, setUsedFriendHelpGlobal] = useState(false);
   const [disabledAnswers, setDisabledAnswers] = useState([]);
   const [helpSuggestion, setHelpSuggestion] = useState(null);
-
+ 
   const playerName = localStorage.getItem("playerName") || "אנונימי";
   const avatar = localStorage.getItem("avatar") || "";
 
@@ -133,6 +134,17 @@ function MonoGame() {
     if (!showNext) return;
 
     const nextQ = getNextQuestion();
+
+    if (!nextQ) {
+      console.log("אין עוד שאלות — מעבר לדף highscore");
+      localStorage.setItem("lastMonoScore", score);
+      setIsFinishing(true);
+      setTimeout(() => {
+        navigate("/highscore");
+      }, 1500);
+      return;
+    }
+
     setCurrentQuestion(nextQ);
     setSelected(null);
     setTimeLeft(30);
@@ -143,7 +155,10 @@ function MonoGame() {
     setDisabledAnswers([]);
   }, [showNext]);
 
-  if (!currentQuestion) return <h2>טוען שאלות...</h2>;
+
+  if (!currentQuestion && !isFinishing) {
+    return <h2>טוען שאלות...</h2>;
+  }
 
   return (
     <div className="game-layout-body">
@@ -155,7 +170,7 @@ function MonoGame() {
         correctAnswer={currentQuestion.correctAnswer}
         onAnswerClick={handleAnswerClick}
         onDoublePoints={handleDoublePoints}
-        onFiftyFifty={handleFiftyFifty}
+        onFiftyFifty={handleFiftyFifty} 
         onHelp={handleFriendHelp}
         helpSuggestion={helpSuggestion}
         disabledAnswers={disabledAnswers}
