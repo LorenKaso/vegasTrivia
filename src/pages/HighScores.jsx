@@ -14,15 +14,20 @@ function HighScore() {
     if (!currentScore || isNaN(currentScore)) return;
 
     const saved = JSON.parse(localStorage.getItem("monoHighScores")) || [];
-    const newEntry = { name: playerName, score: currentScore, avatar };
 
-    const updated = [...saved, newEntry]
+    const alreadyExists = saved.some(entry => entry.score === currentScore);
+    const updated = alreadyExists
+      ? saved
+      : [...saved, { name: playerName, score: currentScore, avatar }];
+
+    const topThree = updated
       .sort((a, b) => b.score - a.score)
       .slice(0, 3);
 
-    localStorage.setItem("monoHighScores", JSON.stringify(updated));
-    setHighScores(updated);
+    localStorage.setItem("monoHighScores", JSON.stringify(topThree));
+    setHighScores(topThree);
   }, []);
+
 
   return (
     <div className="profile-setup-container">

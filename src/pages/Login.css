@@ -18,9 +18,9 @@
 
 .slots {
   position: absolute;
-  width: 28vw; /* תלוי בגודל המסגרת בתמונה */
+  width: 28vw; 
   height: 12vh;
-  top: 44%; /* תלוי במיקום המדויק בתמונה */
+  top: 44%; 
   left: 50%;
   transform: translateX(-50%);
   display: flex;

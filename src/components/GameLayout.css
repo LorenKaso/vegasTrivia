@@ -1,4 +1,3 @@
-/* שכבת פופ-אפ כהה */
 .popup-overlay {
   position: fixed;
   top: 0;
@@ -12,7 +11,6 @@
   z-index: 100;
 }
 
-/* שני כפתורי הבחירה בפופ-אפ */
 .popup-buttons {
   display: flex;
   flex-direction: row;
@@ -52,7 +50,6 @@
 }
 
 
-/* עיצוב כפתור חזרה לדף הבית */
 #back-to-home-btn {
   position: fixed;
   top: 17px;
@@ -74,7 +71,6 @@
   transform: scale(1.05);
 }
 
-/* עיצוב כרטיס השאלה */
 .card {
   background: rgba(0, 153, 204, 0.6);
   border: 3px solid white;
@@ -94,7 +90,6 @@
 }
 
 
-/* גריד תשובות */
 .answers-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -103,8 +98,6 @@
   width: 100%;
 }
 
-/* עיצוב תשובות */
-/* עיצוב תשובות רגיל */
 .answer-card {
   background-color: rgba(0, 153, 204, 0.6);
   color: white;
@@ -128,7 +121,6 @@
   background-color: rgba(255, 0, 0, 0.4);
 }
 
-/* תשובה נכונה - הבהוב ירוק */
 .correct-answer {
   animation: flash-green 0.5s alternate 6;
   background-color: #4CAF50;

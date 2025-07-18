@@ -4,8 +4,8 @@ import Home from '../pages/Home';
 import MonoGame from "../pages/MonoGame";
 import PoloGame from "../pages/PoloGame";
 import GlobalGame from "../pages/GlobalGame";
-import ProfileSetup from "../pages/ProfileSetup"; // חובה להוסיף
-import PoloRoom from "../pages/PoloRoom"; // חובה להוסיף
+import ProfileSetup from "../pages/ProfileSetup"; 
+import PoloRoom from "../pages/PoloRoom";
 import HighScore from "../pages/HighScores";
 
 function AppRouter() {

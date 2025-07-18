@@ -4,7 +4,6 @@ import useQuestionManager from "../components/useQuestionManager";
 import GameLayout from "../components/GameLayout";
 import Timer from "../components/Timer";
 import "../components/GameLayout.css";
-import "./GlobalGame.css";
 import FinalScoreboard from "../components/FinalScoreboard";
 
 function GlobalGame() {
